@@ -1,5 +1,8 @@
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
-import {useMoralis} from 'react-moralis';
+import {useMoralis, MoralisProvider} from 'react-moralis';
+const APP_ID = process.env.REACT_APP_MORALIS_APPLICATION_ID;
+const SERVER_URL = process.env.REACT_APP_MORALIS_SERVER_URL;
+
 function Navb() {
   function Login() {
     const { authenticate, isAuthenticated, isAuthenticating, logout } = useMoralis();
@@ -26,7 +29,9 @@ function Navb() {
       <Nav.Link href="#pricing">Pricing</Nav.Link>
       <Nav.Link href="#About">About</Nav.Link>
     </Nav>
+    <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
     <Login></Login>
+    </MoralisProvider>
   </Navbar.Collapse>
   </Container>
 </Navbar>
