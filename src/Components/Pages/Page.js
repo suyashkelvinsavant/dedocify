@@ -3,7 +3,7 @@ import Home from './Home/Home'
 function Page({state}){
     if(state.connected){
         return(
-        <User state/>
+        <User state={state}/>
         );
     }else{
         return(

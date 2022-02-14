@@ -1,22 +1,18 @@
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
-import { ethers } from 'ethers';
 
 export default function Navb({state, setstate}) {
   
   function disconnect(){
     setstate({connected:false, address:""});
   }
-
+let accounts;
   async function connect(){
-      try{
-        await window.ethereum.send("eth_requestAccounts");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setstate({connected:true, address: address})
-      }catch (err) {
-
-      }
+    accounts = await window.ethereum.request({method: 'eth_requestAccounts'}).catch((err)=>{
+      console.log(err.code);
+    })
+    if(typeof accounts !== 'undefined'){
+      setstate({connected: true, address: accounts[0]})
+    }
     }
   function Login() {
     if(window.ethereum){
