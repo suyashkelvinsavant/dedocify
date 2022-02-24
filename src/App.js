@@ -6,10 +6,13 @@ import React, { useState } from 'react';
 
 function App() {
   const [state, setstate] = useState({connected:false,address:""});
+  const [ekey, setEkey] = useState("")
+  const [cid, setCid] = useState("")
+  const [files, setFiles] = useState([])
   return (
     <>
-      <Navb state={state} setstate={setstate}/>
-      <Page state={state}/>
+      <Navb state={state} setstate={setstate}  setEkey={setEkey}  setCid={setCid} setFiles={setFiles} />
+      <Page state={state} ekey={ekey} cid={cid} setFiles={setFiles} setEkey={setEkey} files={files}  />
       <Footer/>
     </>
   );
