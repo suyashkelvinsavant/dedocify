@@ -1,0 +1,21 @@
+.footer__links, .footer__links:hover, .footer__links:active, .footer__links:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.footer__social__links {
+    background-color: rgb(33 37 41);
+    border: 2px solid rgb(255 255 255);
+    border-radius: 52px;
+}
+
+.footer__social__links:hover {
+    background-color: #30efe7 !important;
+    border: 0 !important;
+    box-shadow: 0 0 9px 0.1rem #30efe7 !important;
+}
+
+.footer__icon {
+    margin: 5px;
+}
