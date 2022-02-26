@@ -1,7 +1,8 @@
 import React from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Footer.css";
-import { Link } from "react-router-dom";
+import { HashLink as Link } from 'react-router-hash-link';
+import logo from "../images/logo.png"
 
 const Footer = () => {
   const googlePlusClicked = () => {
@@ -9,7 +10,7 @@ const Footer = () => {
   };
 
   return (
-    <div className="footer">
+    <div id="footer" className="footer">
       {/* <!-- Footer --> */}
       <footer
         className="text-center text-lg-start text-white"
@@ -24,11 +25,14 @@ const Footer = () => {
               style={{ width: "auto", }}
             >
               {/* <!-- Grid column --> */}
-              <div className="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+              <div className="mx-auto mt-3" style={{width: "fit-content", }}>
                 {/* <h6 className="text-uppercase mb-4 font-weight-bold">
-                    Company name
-                  </h6> */}
-                <p>MediLock Logo.</p>
+                  MediLock
+                </h6> */}
+                <img src={logo} alt="logo" style={{
+                  height: "30vh",
+                  minWidth: "16vw",
+                }} />
               </div>
               {/* <!-- Grid column --> */}
 
@@ -40,20 +44,20 @@ const Footer = () => {
                   Our World
                 </h6>
                 <p>
-                <i className="bi footer__icon bi-house-door"></i>
+                  <i className="bi footer__icon bi-house-door"></i>
                   <Link className="footer__links" to="/">Home</Link>
                 </p>
                 <p>
-                <i className="bi footer__icon bi-people-fill"></i>
-                  <Link className="footer__links" to="/about">About Us</Link>
+                  <i className="bi footer__icon bi-people-fill"></i>
+                  <Link className="footer__links" to="/about-team">About Us</Link>
                 </p>
                 <p>
                   <i className="bi footer__icon bi-briefcase"></i>
-                  <Link className="footer__links" to="/">Hire Our Team</Link>
+                  <Link className="footer__links" to="#footer">Hire Our Team</Link>
                 </p>
                 <p>
-                <i className="bi footer__icon bi-pencil"></i>
-                  <Link className="footer__links" to="/">Feedback</Link>
+                  <i className="bi footer__icon bi-pencil"></i>
+                  <Link className="footer__links" to="#footer">Feedback</Link>
                 </p>
               </div>
               {/* <!-- Grid column --> */}
@@ -66,19 +70,13 @@ const Footer = () => {
                   Assitance
                 </h6>
                 <p>
-                <i className="bi footer__icon bi-shield-check"></i>
+                  <i className="bi footer__icon bi-shield-check"></i>
                   <Link className="footer__links" to="/privacy">Privacy Policy</Link>
                 </p>
                 <p>
-                <i className="bi footer__icon bi-file-text-fill"></i>
+                  <i className="bi footer__icon bi-file-text-fill"></i>
                   <Link className="footer__links" to="/terms">Terms And Conditions</Link>
                 </p>
-                {/* <p>
-                  <a className="text-white">Hire Our Team</a>
-                </p>
-                <p>
-                  <a className="text-white">Feedback</a>
-                </p> */}
               </div>
 
               {/* <!-- Grid column --> */}
@@ -90,15 +88,15 @@ const Footer = () => {
                   Get In Touch...
                 </h6>
                 <p>
-                <i className="bi footer__icon bi-house-heart"></i> Gyan Ganga
+                  <i className="bi footer__icon bi-house-heart"></i> Gyan Ganga
                   Institute of Technology and Sciences, Jabalpur
                 </p>
                 <p>
-                <i className="bi footer__icon bi-envelope-check"></i>{" "}
+                  <i className="bi footer__icon bi-envelope-check"></i>{" "}
                   saurabh.sen.cs19@ggits.net
                 </p>
                 <p>
-                <i className="bi footer__icon bi-telephone-outbound"></i> +91 8305781500
+                  <i className="bi footer__icon bi-telephone-outbound"></i> +91 8305781500
                 </p>
                 {/* <p>
                   <i className="bi footer__icon bi-three-dots-vertical"></i> + 01 234 567 89
@@ -125,10 +123,7 @@ const Footer = () => {
                 <div className="row d-flex justify-content-center">
                   <div className="col-lg-8">
                     <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Sunt distinctio earum repellat quaerat voluptatibus
-                      placeat nam, commodi optio pariatur est quia magnam eum
-                      harum corrupti dicta, aliquam sequi voluptate quas.
+                      Team MEDILOCK provides the solution for the real world problem with best UI/UX designs and optimized backend technologies. We choose technologies which are at top of the market for best user experience.
                     </p>
                   </div>
                 </div>
@@ -167,21 +162,6 @@ const Footer = () => {
                 >
                   <i className="bi footer__icon bi-linkedin"></i>
                 </button>
-                {/* <a href="" className="text-white me-4">
-                  <i className="bi footer__icon bi-three-dots-vertical"></i>
-                </a>
-                <a href="" className="text-white me-4">
-                  <i className="bi footer__icon bi-three-dots-vertical"></i>
-                </a>
-                <a href="" className="text-white me-4">
-                  <i className="bi footer__icon bi-three-dots-vertical"></i>
-                </a>
-                <a href="" className="text-white me-4">
-                  <i className="bi footer__icon bi-three-dots-vertical"></i>
-                </a>
-                <a href="" className="text-white me-4">
-                  <i className="bi footer__icon bi-three-dots-vertical"></i>
-                </a> */}
               </section>
               {/* <!-- Section: Social --> */}
             </div>
@@ -193,9 +173,15 @@ const Footer = () => {
               style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
             >
               © 2020 Copyright:
-              <a className="text-white" href="">
-                Medilock.com
-              </a>
+              <Link className="text-white" to="/">
+                {" "}Medilock.com
+              </Link>
+            </div>
+            <div
+              className="text-center p-3"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+            >
+              Developed with 💖 by team MEDILOCK.
             </div>
             {/* <!-- Copyright --> */}
           </footer>

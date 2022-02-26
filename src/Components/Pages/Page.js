@@ -1,14 +1,18 @@
 import React from "react";
-import Footer from "../Footer/Footer";
 import Navb from "../Navbar/Navb";
-import Home from "./Home/Home";
+import Footer from "../Footer/Footer";
+import HomePage from "../HomePage/HomePage.jsx";
+
+// ! remove jqery library from dependancy
+// ! pricing.
+// ! add go to top button
 
 function Page() {
   return (
     <>
       <Navb />
       <div className="page__container">
-        <Home />
+        <HomePage />
       </div>
       <Footer />
     </>
