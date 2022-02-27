@@ -24,6 +24,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
     const [show, setShow] = useState(false);
     const [pshow, setPshow] = useState(false);
     const [dshow, setDshow] = useState(false);
+    const [ushow, setushow] = useState(false);
     const [sharePublicKey, setSharePublicKey] = useState("");
     const [downloadLink, setDownloadLink] = useState("");
     const [sharedLink, setSharedLink] = useState("")
@@ -63,6 +64,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
 
     async function upload() {
         let encryptedFile, key, encryptionPublicKey;
+        if(fileName.length > 0){
         if (ekey.length > 5) {
             await window.ethereum
                 .request({
@@ -126,6 +128,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
             setEkey(cidData.key)
         }
     }
+    }
     const handleFileDownload = async (cid) => {
         if (ekey.length > 5) {
             let aesKey = await window.ethereum
@@ -158,9 +161,11 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
     const handleClose = () => setShow(false);
     const handlepClose = () => setPshow(false);
     const handledClose = () => setDshow(false);
+    const handleuClose = () => setushow(false);
     const handleShow = () => setShow(true);
     const handlePshow = () => setPshow(true);
     const handleDshow = () => setDshow(true);
+    const handleushow = () => setushow(true);
     const handleSharePublicKey = ({ target }) => {
         setSharePublicKey(target.value);
     }
@@ -262,17 +267,55 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
 
     return (
         <>
-            <Form>
+            <div className="homePageContainer bg-dark " style={{ padding: "1rem 0px 7rem 0px", }} >
+
+            {/* <Form>
                 <FormGroup controlId="formFile" className="mb-3">
                     <FormLabel>Select File</FormLabel>
-                    <FormControl type="file" name='file' onChange={onUploadFileChange} accept="application/pdf,image/*" />
-                    <Button onClick={() => upload()} > Encrypt & Upload</Button>
+                    <FormControl variant="outline-primary"
+                            style={{ oultine: "none", border: "1px solid #30efea" }}
+                            className="custom__input__file__container" type="file" name='file' onChange={onUploadFileChange} accept="application/pdf,image/*" />
+                    <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={() => upload()} > Encrypt & Upload</Button>
+                </FormGroup>
+            </Form> */}
+            <Modal show={ushow} onHide={handleuClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Upload</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <Form>
+                <FormGroup controlId="formFile" className="mb-3">
+                    <FormLabel>Select File</FormLabel>
+                    <FormControl variant="outline-primary"
+                            style={{ oultine: "none", border: "1px solid #30efea" }}
+                            className="custom__input__file__container" type="file" name='file' onChange={onUploadFileChange} accept="application/pdf,image/*" />
+                    <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={() => upload()} > Encrypt & Upload</Button>
                 </FormGroup>
             </Form>
-            <Button onClick={() => handleGetPublicKey()}> Share Public Key</Button>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleuClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={() => handleGetPublicKey()}> Share Public Key</Button>
+            <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={() => handleushow()}> Upload</Button>
 
-            <Button onClick={() => handleDownload()}>Download Shared File</Button>
+            <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={() => handleDownload()}>Download Shared File</Button>
+                        <Card className="bg-dark files__list__container">
             <UserFiles />
+            </Card>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Enter Recipient's Public Key</Modal.Title>
@@ -290,10 +333,14 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleShareEncrypt}>
+                    <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={handleShareEncrypt}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
@@ -329,11 +376,14 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                     <Button variant="secondary" onClick={handledClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={() => handleSharedFileDownload()}>
+                    <Button variant="outline-primary"
+                        style={{ oultine: "none", }}
+                        className="custom__input__file__container" onClick={() => handleSharedFileDownload()}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>
+            </div>
         </>
     );
 }

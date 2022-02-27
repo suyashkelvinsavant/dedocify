@@ -1,0 +1,79 @@
+.about {
+    background-color: #212529;
+  }
+  
+  .social-link {
+      width: 39px;
+      height: 37px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+      text-decoration: none;
+      background-color: #212529;
+      color: white;
+      border: 2px solid #2ee8ea;
+    }
+    
+    .social-link:hover,
+    .social-link:focus {
+      background: #2ee8ea;
+      text-decoration: none;
+      color: white;
+      box-shadow: 0px 0rem 1rem 2px rgb(44 207 209) !important;
+    }
+    
+    .about__container {
+      background-color: rgb(33, 37, 41);
+      color: white;
+    }
+    
+    .font-weight-light {
+      color: white;
+    }
+    
+    .btn-black {
+      color: white;
+      border: 1px solid #2ee8ea;
+    }
+    
+    .btn-black:hover {
+      color: white;
+      border: 1px solid #2ee8ea;
+      background-color: #2ee8ea;
+      box-shadow: 0px 0rem 1rem 2px rgb(44 207 209) !important;
+    }
+    
+    .team__box {
+          height: 30em;
+          color: white;
+      border: 1px solid #2ee8ea38;
+      background-color: rgb(255 255 255 / 29%) !important;
+      box-shadow: 0 8px 32px 0 rgb(73 202 233 / 47%) !important;
+      backdrop-filter: blur( 1.5px );
+      -webkit-backdrop-filter: blur( 1.5px );
+      border-radius: 20px !important;
+          margin: 10px;
+    }
+    
+    .speciality {
+      color: #ffffff63 !important;
+    }
+  
+    .align-items-center {
+      margin-top: 5vw;
+    }
+  
+    @media screen and (max-width: 1160px) {
+      .align-items-center {
+        margin-top: 20vh;
+      }
+    }
+  
+    .hr__line {
+      width: 90vw !important;
+      color: white;
+      margin: auto;
+    }
