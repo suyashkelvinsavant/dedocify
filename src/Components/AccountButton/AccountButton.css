@@ -1,0 +1,11 @@
+.accountBtn {
+    background-color: #212529;
+    border: 1.6px solid #39d3cf;
+    border-radius: 20px;
+}
+
+.accountBtn:hover {
+    background-color: #39d3cf;
+    box-shadow: 0 0 9px 0.1rem #30efe7 !important;
+        border: 1.6px solid #30efe7;
+}

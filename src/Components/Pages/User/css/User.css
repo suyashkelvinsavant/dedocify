@@ -1,0 +1,114 @@
+.user {
+  background-color: #212529;
+}
+
+.fileInputBox {
+      display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.custom__input__file__container {
+  max-width: 80%;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0.625rem 1.25rem;
+  color: #39d3cf;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+.custom__input__file__container:hover,
+.custom__input__file__container:active,
+.custom__input__file__container:focus {
+  color: #30efea;
+  border: 1px solid #30efea;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.files__list__container {
+  border: 1px solid transparent;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+      padding: 7rem 5rem 0rem 5rem;
+  justify-content: center;
+}
+
+.file__list__container__item {
+  width: 40vw;
+  border-radius: 30px;
+  border: 2px solid #30efe7;
+  margin: 0.6rem;
+}
+
+@media screen and (max-width: 600px) {
+  .file__list__container__item {
+    width: 80vw;
+  }
+}
+
+.filename__list {
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 5rem;
+}
+
+.filename {
+  margin: 0px;
+  padding: 0px;
+}
+
+.filename__icons {
+  margin: 0px;
+  padding: 0px;
+  width: 4vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-toggle {
+  background: transparent !important;
+  outline: 0 !important;
+  border: none !important;
+}
+
+.dropdown-toggle:focus {
+  box-shadow: none !important;
+}
+
+.dropdown-toggle::before {
+  display: none !important;
+}
+
+.dropdown-menu.show {
+   background-color: black !important;
+    border: 1px solid #30efe7;
+}
+
+.dropdown-item {
+  color: white !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #30efe7 !important;
+  background-color: transparent !important;
+}
+
+.modal-content {
+  background-color: rgb(17, 19, 21);
+  border: 1px solid rgb(48, 213, 215);
+  color: white;
+}
