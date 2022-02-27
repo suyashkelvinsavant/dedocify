@@ -4,6 +4,7 @@ import About from "./Components/Pages/About/About.jsx";
 import Privacy from "./Components/Pages/PrivacyPolicy/Privacy.jsx";
 import Terms from "./Components/Pages/TermsAndConditions/Terms.jsx";
 import Pricing from "./Components/Pricing/Pricing.jsx";
+import User from "./Components/Pages/User/User.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import your route components too
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/user" element={<User />} />
       </Routes>
     </BrowserRouter>
   );

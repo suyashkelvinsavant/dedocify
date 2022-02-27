@@ -1,6 +1,7 @@
 import React from 'react'
 import Navb from '../../Navbar/Navb.jsx';
 import Footer from '../../Footer/Footer.jsx';
+import ScrollToTop from "../../ScrollToTop/ScrollToTop.jsx";
 
 const Privacy = () => {
   return (
@@ -94,6 +95,7 @@ const Privacy = () => {
         margin: "auto",
       }} />
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

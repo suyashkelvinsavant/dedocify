@@ -1,6 +1,7 @@
 import React from 'react'
 import Footer from '../../Footer/Footer'
 import Navb from '../../Navbar/Navb'
+import ScrollToTop from '../../ScrollToTop/ScrollToTop'
 
 const Terms = () => {
   return (
@@ -138,6 +139,7 @@ const Terms = () => {
         margin: "auto",
       }} />
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

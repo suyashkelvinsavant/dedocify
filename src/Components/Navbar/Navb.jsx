@@ -4,6 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { HashLink as Link } from 'react-router-hash-link';
 
 const Navb = () => {
+
   return (
     <section className="menuu menu--circle">
       <input type="checkbox" id="menu__active" />

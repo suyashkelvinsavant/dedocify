@@ -17,7 +17,7 @@ const Footer = () => {
         style={{ backgroundColor: "rgb(33 37 41)" }}
       >
         {/* <!-- Grid container --> */}
-        <div className="container p-4 pb-0">
+        <div className=" p-4 pb-0">
           {/* <!-- Section: Links --> */}
           <section className="">
             {/* <!--Grid row--> */}
@@ -30,8 +30,8 @@ const Footer = () => {
                   MediLock
                 </h6> */}
                 <img src={logo} alt="logo" style={{
-                  height: "30vh",
-                  minWidth: "16vw",
+                  height: "25vh",
+                  minWidth: "12vw",
                 }} />
               </div>
               {/* <!-- Grid column --> */}
@@ -121,7 +121,7 @@ const Footer = () => {
               {/* <!-- Section: Text --> */}
               <section className="mb-5">
                 <div className="row d-flex justify-content-center">
-                  <div className="col-lg-8">
+                  <div className="">
                     <p>
                       Team MEDILOCK provides the solution for the real world problem with best UI/UX designs and optimized backend technologies. We choose technologies which are at top of the market for best user experience.
                     </p>

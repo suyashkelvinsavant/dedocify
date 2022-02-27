@@ -10,6 +10,7 @@ import suyash from "../../images/shuyash.png"
 import vaibhav from "../../images/Vaibhav.jpg"
 import sakshi from "../../images/sakshi.jpg"
 import { HashLink as Link } from 'react-router-hash-link';
+import ScrollToTop from '../../ScrollToTop/ScrollToTop';
 
 const facebookClicked = (url) => {
   window.open(`https://www.facebook.com/${url}`);
@@ -145,7 +146,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in Designing amazing websites with optimized backend logic.
                 </span>
-                <ul className="social mb-0 list-inline mt-3">
+                <ul className="social mb-0 list-inline mt-5">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("")}
@@ -200,7 +201,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in UI with NEXT. JS Bootstrap.
                 </span>
-                <ul className="social mb-0 list-inline mt-3">
+                <ul className="social mb-0 list-inline  mt-5">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("")}
@@ -256,7 +257,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in UI with Canva, figma and Bootstrap.
                 </span>
-                <ul className="social mb-0 list-inline mt-3">
+                <ul className="social mb-0 list-inline  mt-5">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("profile.php?id=100027311282889")}
@@ -311,7 +312,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in development of optimized backend logic.
                 </span>
-                <ul className="social mb-0 list-inline mt-3">
+                <ul className="social mb-0 list-inline  mt-5">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("kelvinator.nft/")}
@@ -366,7 +367,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in development of optimized backend logic and frontend using React .js knowledge.
                 </span>
-                <ul className="social mb-0 list-inline mt-3">
+                <ul className="social mb-0 list-inline  mt-5">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("vaibhavk.kushwaha")}
@@ -421,7 +422,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in development of frontend using Html, css and javascript.
                 </span>
-                <ul className="social mb-0 list-inline mt-3">
+                <ul className="social mb-0 list-inline  mt-5">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("profile.php?id=100004807637054")}
@@ -469,6 +470,7 @@ function About() {
       <hr className="hr__line" />
 
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }

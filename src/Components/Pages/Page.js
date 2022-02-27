@@ -2,10 +2,8 @@ import React from "react";
 import Navb from "../Navbar/Navb";
 import Footer from "../Footer/Footer";
 import HomePage from "../HomePage/HomePage.jsx";
+import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
-// ! remove jqery library from dependancy
-// ! pricing.
-// ! add go to top button
 
 function Page() {
   return (
@@ -15,6 +13,7 @@ function Page() {
         <HomePage />
       </div>
       <Footer />
+      <ScrollToTop />
     </>
   );
 }

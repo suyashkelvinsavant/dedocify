@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./css/User.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Button, Card, Dropdown } from "react-bootstrap";
+import Navb from "../../Navbar/Navb";
+import Footer from "../../Footer/Footer";
+import ScrollToTop from "../../ScrollToTop/ScrollToTop";
 
 
 const User = () => {
@@ -60,6 +63,7 @@ const User = () => {
     };
     return (
         <div className='user'>
+            <Navb />
             <div className="homePageContainer bg-dark " style={{ padding: "17px 0px", }} >
                 <div className="fileInputBox">
                     {file !== null ? (
@@ -89,12 +93,23 @@ const User = () => {
                         onChange={() => setFile(document.getElementById("inputfile"))}
                     />
                 </div>
-                <hr className="bg-light" />
+                <hr style={{
+          width: "80vw",
+          margin: "auto",
+          color: "white",
+        }} />
                 <Card className="bg-dark files__list__container">
                     {/* loop through https://gateway.pinata.cloud/ipfs/QmTBdZegPJvBumaQfU2JtiB3wtgZH7KNHVNz8q9QRxToxw this data */}
                     {renderUserFiles()}
                 </Card>
             </div>
+            <hr style={{
+          width: "80vw",
+          margin: "auto",
+          color: "white",
+        }} />
+            <Footer />
+            <ScrollToTop />
         </div>
     )
 }
