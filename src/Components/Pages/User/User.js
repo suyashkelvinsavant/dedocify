@@ -1,4 +1,4 @@
-import { Button, Form, FormGroup, FormLabel, FormControl, Card, Dropdown } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormLabel, FormControl, Card, Dropdown, Modal, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 import CryptoJS from 'crypto-js';
 import sha512 from 'crypto-js/sha512';
@@ -21,9 +21,17 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
             cb(error, null)
         }
     }
+    const [show, setShow] = useState(false);
+    const [pshow, setPshow] = useState(false);
+    const [dshow, setDshow] = useState(false);
+    const [sharePublicKey, setSharePublicKey] = useState("");
+    const [downloadLink, setDownloadLink] = useState("");
+    const [sharedLink, setSharedLink] = useState("")
+    const localhost = "http://localhost:5000/api";
+    const pinataGateway = "https://gateway.pinata.cloud/ipfs/"
     const getCidData = async (cid) => {
         if (typeof cid !== 'undefined') {
-            let d = await fetch("https://gateway.pinata.cloud/ipfs/" + cid)
+            let d = await fetch(pinataGateway + cid)
             let data = d.json()
             return data;
         } else {
@@ -111,7 +119,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                 sign: signature
             }
             console.log(body)
-            let resp = await fetch("http://localhost:5000/api", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+            let resp = await fetch(localhost, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
             let data = await resp.json()
             let cidData = await getCidData(data.cid)
             setFiles(cidData.files)
@@ -125,17 +133,74 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                     method: 'eth_decrypt',
                     params: [ekey, state.address],
                 });
-            let res = await fetch("https://gateway.pinata.cloud/ipfs/" + cid)
+            let res = await fetch(pinataGateway + cid)
             let file = await res.json()
             let decryptedFile = await CryptoJS.AES.decrypt(file.data, aesKey).toString(CryptoJS.enc.Utf8);
-            triggerBase64Download(decryptedFile)
-            // .then(async(aeskey) => {
-            //     let res = await fetch("https://gateway.pinata.cloud/ipfs/" + cid)
-            //     let file = await res.json()
-            //     let decryptedFile =await CryptoJS.AES.decrypt(file.data, aeskey).toString(CryptoJS.enc.Utf8);
-            //     triggerBase64Download(decryptedFile)
-            // })
-            // .catch((error) => console.log(error.message));
+            triggerBase64Download(decryptedFile, file.filename.split('.').slice(0, -1).join('.'))
+        }
+    }
+    const handleShare = async (cid) => {
+        if (ekey.length > 5) {
+            let aesKey = await window.ethereum
+                .request({
+                    method: 'eth_decrypt',
+                    params: [ekey, state.address],
+                });
+            let res = await fetch(pinataGateway + cid)
+            let file = await res.json()
+            let decryptedFile = await CryptoJS.AES.decrypt(file.data, aesKey).toString(CryptoJS.enc.Utf8);
+            setFile(decryptedFile)
+            setFileName(file.filename)
+            handleShow()
+        }
+    }
+
+    const handleClose = () => setShow(false);
+    const handlepClose = () => setPshow(false);
+    const handledClose = () => setDshow(false);
+    const handleShow = () => setShow(true);
+    const handlePshow = () => setPshow(true);
+    const handleDshow = () => setDshow(true);
+    const handleSharePublicKey = ({ target }) => {
+        setSharePublicKey(target.value);
+    }
+    const handleDownloadLink = ({ target }) => {
+        setDownloadLink(target.value);
+    }
+    const handleShareEncrypt = async () => {
+        let kkey = await makeAesKey()
+        let eencryptedFile = await CryptoJS.AES.encrypt(file, kkey).toString();
+        if (kkey.length > 1) {
+            const encryptedAES = bufferToHex(
+                Buffer.from(
+                    JSON.stringify(
+                        encrypt({
+                            publicKey: sharePublicKey,
+                            data: kkey,
+                            version: 'x25519-xsalsa20-poly1305',
+                        })
+                    ),
+                    'utf8'
+                )
+            );
+            let hash = sha512(eencryptedFile).toString();
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner()
+            let signature = await signer.signMessage(hash);
+            let body = {
+                filename: fileName,
+                address: state.address,
+                key: ekey,
+                data: eencryptedFile,
+                hash: hash,
+                sign: signature,
+                share: encryptedAES
+            }
+            console.log(body)
+            let resp = await fetch(localhost, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+            let data = await resp.json()
+            setSharedLink(data.cid)
         }
     }
     const UserFiles = () => { // Made by Saurabh Sen
@@ -154,8 +219,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
 
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={() => handleFileDownload(id)}>Download</Dropdown.Item>
-                                    <Dropdown.Item>Share</Dropdown.Item>
-                                    <Dropdown.Item>Delete</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => handleShare(id)}>Share</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -164,6 +228,38 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
             );
         });
     };
+    const handleGetPublicKey = async () => {
+        await window.ethereum.request({
+            method: 'eth_getEncryptionPublicKey',
+            params: [state.address],
+        }).then((result) => {
+            setSharePublicKey(result)
+        }).catch((error) => {
+            if (error.code === 4001) {
+                console.log("We can't encrypt anything without the key.");
+            } else {
+                console.error(error);
+            }
+        });
+        handlePshow();
+
+    }
+    const handleDownload = async () => {
+        handleDshow()
+    }
+    const handleSharedFileDownload = async () => {
+        let res = await fetch(pinataGateway + downloadLink)
+        let file = await res.json()
+        let encKey = await file.key;
+        let aesKey = await window.ethereum
+            .request({
+                method: 'eth_decrypt',
+                params: [encKey, state.address],
+            });
+        let decryptedFile = await CryptoJS.AES.decrypt(file.data, aesKey).toString(CryptoJS.enc.Utf8);
+        triggerBase64Download(decryptedFile, file.filename.split('.').slice(0, -1).join('.'))
+    }
+
     return (
         <>
             <Form>
@@ -173,7 +269,71 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                     <Button onClick={() => upload()} > Encrypt & Upload</Button>
                 </FormGroup>
             </Form>
+            <Button onClick={() => handleGetPublicKey()}> Share Public Key</Button>
+
+            <Button onClick={() => handleDownload()}>Download Shared File</Button>
             <UserFiles />
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Enter Recipient's Public Key</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <InputGroup className="mb-3">
+                        <FormControl
+                            placeholder="Recipient's Public Key"
+                            aria-label="Recipient's Public Key"
+                            aria-describedby="sharePublicKey"
+                            onChange={handleSharePublicKey}
+                        />
+                    </InputGroup>
+                    <h7 onClick={() => navigator.clipboard.writeText(sharedLink)}>{sharedLink}</h7>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleShareEncrypt}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={pshow} onHide={handlepClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Your Public Key</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p onClick={() => navigator.clipboard.writeText(sharePublicKey)}>{sharePublicKey}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handlepClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={dshow} onHide={handledClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Shared File ID</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <InputGroup className="mb-3">
+                        <FormControl
+                            placeholder="Enter File ID"
+                            aria-label="Enter File ID"
+                            aria-describedby="sharePublicKey"
+                            onChange={handleDownloadLink}
+                        />
+                    </InputGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handledClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={() => handleSharedFileDownload()}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }
