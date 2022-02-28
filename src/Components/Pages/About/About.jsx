@@ -146,7 +146,7 @@ function About() {
                 <span className="speciality small text-uppercase text-muted">
                   Speciality in Designing amazing websites with optimized backend logic.
                 </span>
-                <ul className="social mb-0 list-inline mt-5">
+                <ul className="social mb-0 list-inline mt-4">
                   <li className="list-inline-item">
                     <button
                       onClick={() => facebookClicked("")}

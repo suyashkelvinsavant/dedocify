@@ -5,8 +5,20 @@ import { HashLink as Link } from 'react-router-hash-link';
 import logo from "../images/logo.png"
 
 const Footer = () => {
-  const googlePlusClicked = () => {
-    window.open("https://www.google.com/");
+  const FacebookClicked = () => {
+    window.open("https://www.facebook.com/");
+  };
+  const TwitterClicked = () => {
+    window.open("https://www.twitter.com/");
+  };
+  const InstagramClicked = () => {
+    window.open("https://www.instagram.com/");
+  };
+  const GithubClicked = () => {
+    window.open("https://www.github.com/");
+  };
+  const LinkedInClicked = () => {
+    window.open("https://www.linkedin.com/");
   };
 
   return (
@@ -134,31 +146,31 @@ const Footer = () => {
               <section className="text-center mb-5">
                 <button
                   className="btn btn-primary btn-floating m-1 text-white me-4 footer__social__links"
-                  onClick={googlePlusClicked}
+                  onClick={FacebookClicked}
                 >
                   <i className="bi footer__icon bi-facebook"></i>
                 </button>
                 <button
                   className="btn btn-primary btn-floating m-1 text-white me-4 footer__social__links"
-                  onClick={googlePlusClicked}
+                  onClick={TwitterClicked}
                 >
                   <i className="bi footer__icon bi-twitter"></i>
                 </button>
                 <button
                   className="btn btn-primary btn-floating m-1 text-white me-4 footer__social__links"
-                  onClick={googlePlusClicked}
+                  onClick={InstagramClicked}
                 >
                   <i className="bi footer__icon bi-instagram"></i>
                 </button>
                 <button
                   className="btn btn-primary btn-floating m-1 text-white me-4 footer__social__links"
-                  onClick={googlePlusClicked}
+                  onClick={GithubClicked}
                 >
                   <i className="bi footer__icon bi-github"></i>
                 </button>
                 <button
                   className="btn btn-primary btn-floating m-1 text-white me-4 footer__social__links"
-                  onClick={googlePlusClicked}
+                  onClick={LinkedInClicked}
                 >
                   <i className="bi footer__icon bi-linkedin"></i>
                 </button>

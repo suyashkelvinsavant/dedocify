@@ -2,9 +2,10 @@ import React from 'react'
 import { Button } from 'react-bootstrap';
 import "./AccountButton.css";
 
-const AccountButton = ({ state, setstate, setCid, setEkey, setFiles }) => {
-    const disconnect = () => {
-        setstate({ connected: false, address: "", key: "" });
+const AccountButton = ({ state, setState, setCid, setEkey, setFiles }) => {
+
+    function disconnect() {
+        setState({ connected: false, address: "", key: "" });
     }
 
     let accounts;
@@ -14,7 +15,7 @@ const AccountButton = ({ state, setstate, setCid, setEkey, setFiles }) => {
             .catch((err) => {
                 console.log(err.code);
             });
-        setstate({ connected: true, address: accounts[0] });
+        setState({ connected: true, address: accounts[0] });
         if (typeof accounts !== "undefined") {
             let response = await fetch(
                 "http://localhost:5000/api?address=" + accounts[0]
@@ -36,15 +37,10 @@ const AccountButton = ({ state, setstate, setCid, setEkey, setFiles }) => {
         if (window.ethereum) {
             if (state.connected) {
                 return (
-                    //   <i className="bi bi-box-arrow-right" onClick={() => disconnect()}></i>
                     <Button className="accountBtn" onClick={() => disconnect()} >Get Account Out</Button>
                 );
             } else {
                 return (
-                    //   <i
-                    //     className="bi bi-box-arrow-in-left"
-                    //     onClick={async () => connect()}
-                    //   ></i>
                     <Button className="accountBtn" onClick={async () => connect()} >Get Account In</Button>
                 );
             }
@@ -53,27 +49,13 @@ const AccountButton = ({ state, setstate, setCid, setEkey, setFiles }) => {
         }
     }
     return (
-        <div className='account' style={{position: "fixed",
-            top: "65px",
-            right: "19px",
-            zIndex: "1"}}>
+        <div className='account' style={{
+            position: "fixed",
+            top: "10vh",
+            right: "2vw",
+            zIndex: "1"
+        }}>
             <Login />
-            {/* <Button
-                type="button"
-                className="btn btn-floating btn-lg"
-                id="btn-back-to-top"
-                onClick={}
-                style={{
-                    position: "fixed",
-                    bottom: "50px",
-                    right: "50px",
-                    display: visible ? 'inline' : 'none',
-                    backgroundColor: "#212529",
-                    border: "1px solid #32efe7",
-                    borderRadius: "50%",
-                }}
-            >
-            </Button> */}
         </div>
     )
 }

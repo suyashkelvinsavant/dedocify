@@ -47,15 +47,19 @@
   }
   
   .team__box {
-        height: 30em;
-        color: white;
+        height: 34em;
+    color: white;
     border: 1px solid #2ee8ea38;
     background-color: rgb(255 255 255 / 29%) !important;
     box-shadow: 0 8px 32px 0 rgb(73 202 233 / 47%) !important;
     backdrop-filter: blur( 1.5px );
     -webkit-backdrop-filter: blur( 1.5px );
     border-radius: 20px !important;
-        margin: 10px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   
   .speciality {

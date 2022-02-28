@@ -5,7 +5,7 @@
   .wrapper {
     /* background: linear-gradient(60deg, #420285, #08BDBD); */
         background-color: #212529;
-        height: 100vh;
+        height: 140vh;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -13,7 +13,7 @@
 
   @media screen and (max-width: 750px) {
     .wrapper {
-      height: 280vh;
+      height: 280vh !important;
     }
   }
   

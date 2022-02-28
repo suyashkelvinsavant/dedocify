@@ -9,11 +9,10 @@ import { triggerBase64Download } from 'common-base64-downloader-react';
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./css/User.css";
-import ScrollToTop from "../../ScrollToTop/ScrollToTop";
 import AccountButton from "../../AccountButton/AccountButton";
 
 
-const User = ({ state, setstate, ekey, cid, files, setFiles, setEkey }) => {
+const User = ({ state, setState, ekey, cid, files, setFiles, setEkey }) => {
 
     const [loadedFileName, setLoadedFileName] = useState(null);
 
@@ -319,7 +318,7 @@ const User = ({ state, setstate, ekey, cid, files, setFiles, setEkey }) => {
     return (
         <div className='user'>
             <AccountButton state={state}
-                setstate={setstate} />
+                setState={setState} />
             <div className="homePageContainer bg-dark " style={{ padding: "13rem 0px 7rem 0px", }} >
                 <div className="fileInputBox">
                     <Button
@@ -462,7 +461,6 @@ const User = ({ state, setstate, ekey, cid, files, setFiles, setEkey }) => {
                 margin: "auto",
                 color: "white",
             }} />
-            <ScrollToTop />
         </div>
     )
 }

@@ -6,7 +6,7 @@ import ScrollToTop from "../ScrollToTop/ScrollToTop";
 import User from "./User/User.jsx";
 const Page = () => {
   // { state, ekey, cid, files, setFiles, setEkey, page }
-  const [state, setstate] = useState({ connected: false, address: "", key:"" });
+  const [state, setState] = useState({ connected: false, address: "", key:"" });
   const [ekey, setEkey] = useState("");
   const [cid, setCid] = useState("");
   const [files, setFiles] = useState([]);
@@ -16,7 +16,7 @@ const Page = () => {
     <div className="page">
       <Navb
         state={state}
-        setstate={setstate}
+        setState={setState}
         setEkey={setEkey}
         setCid={setCid}
         setFiles={setFiles}
@@ -24,6 +24,7 @@ const Page = () => {
       {state.connected ? (
         <User
           state={state}
+          setState={setState}
           ekey={ekey}
           cid={cid}
           setFiles={setFiles}
@@ -33,7 +34,7 @@ const Page = () => {
       ) : (
         <div className="page__container">
           <HomePage state={state}
-        setstate={setstate}
+        setState={setState}
         setEkey={setEkey}
         setCid={setCid}
         setFiles={setFiles} />

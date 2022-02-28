@@ -4,11 +4,11 @@ import AboutOurService from "../AboutOurService/AboutOurService";
 import AccountButton from "../AccountButton/AccountButton";
 import logo from "../images/logo.png";
 
-const HomePage = ({ state, setstate, setCid, setEkey, setFiles }) => {
+const HomePage = ({ state, setState, setCid, setEkey, setFiles }) => {
   return (
     <div className="HomePage">
       <AccountButton state={state}
-        setstate={setstate}
+        setState={setState}
         setEkey={setEkey}
         setCid={setCid}
         setFiles={setFiles} />
@@ -23,6 +23,7 @@ const HomePage = ({ state, setstate, setCid, setEkey, setFiles }) => {
         alignItems: "center",
         borderRadius: "0",
         borderBottom: "0",
+        paddingTop: "20vh",
       }}>
         <img src={logo} alt="logo" style={{
           height: "33vh",

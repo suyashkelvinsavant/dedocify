@@ -4,10 +4,12 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { HashLink as Link } from "react-router-hash-link";
 
 // login icon in navbar and change it when you connect it
-const Navb = ({ state, setstate, setCid, setEkey, setFiles }) => {
+const Navb = ({ state, setState, setCid, setEkey, setFiles }) => {
+
   function disconnect() {
-    setstate({ connected: false, address: "", key: "" });
+    setState({ connected: false, address: "", key: "" });
   }
+
   let accounts;
   async function connect() {
     accounts = await window.ethereum
@@ -15,7 +17,7 @@ const Navb = ({ state, setstate, setCid, setEkey, setFiles }) => {
       .catch((err) => {
         console.log(err.code);
       });
-    setstate({ connected: true, address: accounts[0] });
+    setState({ connected: true, address: accounts[0] });
     if (typeof accounts !== "undefined") {
       let response = await fetch(
         "http://localhost:5000/api?address=" + accounts[0]
