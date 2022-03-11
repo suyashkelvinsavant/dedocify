@@ -3,7 +3,29 @@ import "./Navb.scss";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 export default function Navb({ state, setstate,  setCid, setEkey, setFiles, setPage }) {
-
+  const getCidData = async (cid) => {
+    if (typeof cid !== 'undefined') {
+        let resp = await fetch("https://gateway.pinata.cloud/ipfs/" + cid);
+        if (resp.status >= 200 && resp.status <= 299) {
+            return await resp.json()
+        } else {
+            let resp2 = await fetch("https://" + cid + ".ipfs.infura-ipfs.io/")
+            if (resp2.status >= 200 && resp2.status <= 299) {
+                return await resp2.json()
+            } else {
+                let resp3 = await fetch("https://ipfs.io/ipfs/" + cid)
+                if (resp3.status >= 200 && resp3.status <= 299) {
+                    return await resp3.json()
+                } else {
+                    console.log("Unable to get CID")
+                    return 0;
+                }
+            }
+        }
+    } else {
+        console.log("Error: CID not defined")
+    }
+}
   function disconnect() {
     setstate({ connected: false, address: "", key: "" });
   }
@@ -19,8 +41,7 @@ export default function Navb({ state, setstate,  setCid, setEkey, setFiles, setP
       if (typeof res.cid !== 'undefined') {
         let cid = res.cid;
         setCid(cid)
-        let resp = await fetch("https://gateway.pinata.cloud/ipfs/" + cid)
-        let user_data = await resp.json()
+        let user_data = await getCidData(cid)
         if (typeof user_data.key !== 'undefined') {
           setEkey(user_data.key)
           setFiles(user_data.files)

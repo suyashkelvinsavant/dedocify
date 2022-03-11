@@ -8,6 +8,7 @@ import { ethers } from 'ethers'
 import './User.scss'
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { triggerBase64Download } from 'common-base64-downloader-react';
+
 function User({ state, ekey, cid, files, setFiles, setEkey }) {
     const [fileName, setFileName] = useState("")
     const [file, setFile] = useState("")
@@ -32,9 +33,23 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
     const pinataGateway = "https://gateway.pinata.cloud/ipfs/"
     const getCidData = async (cid) => {
         if (typeof cid !== 'undefined') {
-            let d = await fetch(pinataGateway + cid)
-            let data = d.json()
-            return data;
+            let resp = await fetch("https://gateway.pinata.cloud/ipfs/" + cid);
+            if (resp.status >= 200 && resp.status <= 299) {
+                return await resp.json()
+            } else {
+                let resp2 = await fetch("https://" + cid + ".ipfs.infura-ipfs.io/")
+                if (resp2.status >= 200 && resp2.status <= 299) {
+                    return await resp2.json()
+                } else {
+                    let resp3 = await fetch("https://ipfs.io/ipfs/" + cid)
+                    if (resp3.status >= 200 && resp3.status <= 299) {
+                        return await resp3.json()
+                    } else {
+                        console.log("Unable to get CID")
+                        return 0;
+                    }
+                }
+            }
         } else {
             console.log("Error: CID not defined")
         }
@@ -64,70 +79,70 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
 
     async function upload() {
         let encryptedFile, key, encryptionPublicKey;
-        if(fileName.length > 0){
-        if (ekey.length > 5) {
-            await window.ethereum
-                .request({
-                    method: 'eth_decrypt',
-                    params: [ekey, state.address],
-                })
-                .then((aeskey) => {
-                    key = aeskey;
-                    encryptedFile = CryptoJS.AES.encrypt(file, aeskey).toString();
-                })
-                .catch((error) => console.log(error.message));
-        } else {
-            key = makeAesKey()
-            encryptedFile = CryptoJS.AES.encrypt(file, key).toString();
-        }
-
-        await window.ethereum.request({
-            method: 'eth_getEncryptionPublicKey',
-            params: [state.address],
-        }).then((result) => {
-            encryptionPublicKey = result;
-        }).catch((error) => {
-            if (error.code === 4001) {
-                console.log("We can't encrypt anything without the key.");
+        if (fileName.length > 0) {
+            if (ekey.length > 5) {
+                await window.ethereum
+                    .request({
+                        method: 'eth_decrypt',
+                        params: [ekey, state.address],
+                    })
+                    .then((aeskey) => {
+                        key = aeskey;
+                        encryptedFile = CryptoJS.AES.encrypt(file, aeskey).toString();
+                    })
+                    .catch((error) => console.log(error.message));
             } else {
-                console.error(error);
+                key = makeAesKey()
+                encryptedFile = CryptoJS.AES.encrypt(file, key).toString();
             }
-        });
 
-        if (key.length > 1) {
-            const encryptedAES = bufferToHex(
-                Buffer.from(
-                    JSON.stringify(
-                        encrypt({
-                            publicKey: encryptionPublicKey,
-                            data: key,
-                            version: 'x25519-xsalsa20-poly1305',
-                        })
-                    ),
-                    'utf8'
-                )
-            );
-            let hash = sha512(encryptedFile).toString();
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner()
-            let signature = await signer.signMessage(hash);
-            let body = {
-                filename: fileName,
-                address: state.address,
-                key: encryptedAES,
-                data: encryptedFile,
-                hash: hash,
-                sign: signature
+            await window.ethereum.request({
+                method: 'eth_getEncryptionPublicKey',
+                params: [state.address],
+            }).then((result) => {
+                encryptionPublicKey = result;
+            }).catch((error) => {
+                if (error.code === 4001) {
+                    console.log("We can't encrypt anything without the key.");
+                } else {
+                    console.error(error);
+                }
+            });
+
+            if (key.length > 1) {
+                const encryptedAES = bufferToHex(
+                    Buffer.from(
+                        JSON.stringify(
+                            encrypt({
+                                publicKey: encryptionPublicKey,
+                                data: key,
+                                version: 'x25519-xsalsa20-poly1305',
+                            })
+                        ),
+                        'utf8'
+                    )
+                );
+                let hash = sha512(encryptedFile).toString();
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                await provider.send("eth_requestAccounts", []);
+                const signer = provider.getSigner()
+                let signature = await signer.signMessage(hash);
+                let body = {
+                    filename: fileName,
+                    address: state.address,
+                    key: encryptedAES,
+                    data: encryptedFile,
+                    hash: hash,
+                    sign: signature
+                }
+                console.log(body)
+                let resp = await fetch(localhost, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+                let data = await resp.json()
+                let cidData = await getCidData(data.cid)
+                setFiles(cidData.files)
+                setEkey(cidData.key)
             }
-            console.log(body)
-            let resp = await fetch(localhost, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-            let data = await resp.json()
-            let cidData = await getCidData(data.cid)
-            setFiles(cidData.files)
-            setEkey(cidData.key)
         }
-    }
     }
     const handleFileDownload = async (cid) => {
         if (ekey.length > 5) {
@@ -136,8 +151,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                     method: 'eth_decrypt',
                     params: [ekey, state.address],
                 });
-            let res = await fetch(pinataGateway + cid)
-            let file = await res.json()
+            let file = await getCidData(cid)
             let decryptedFile = await CryptoJS.AES.decrypt(file.data, aesKey).toString(CryptoJS.enc.Utf8);
             triggerBase64Download(decryptedFile, file.filename.split('.').slice(0, -1).join('.'))
         }
@@ -149,8 +163,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                     method: 'eth_decrypt',
                     params: [ekey, state.address],
                 });
-            let res = await fetch(pinataGateway + cid)
-            let file = await res.json()
+            let file = await getCidData(cid)
             let decryptedFile = await CryptoJS.AES.decrypt(file.data, aesKey).toString(CryptoJS.enc.Utf8);
             setFile(decryptedFile)
             setFileName(file.filename)
@@ -253,8 +266,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
         handleDshow()
     }
     const handleSharedFileDownload = async () => {
-        let res = await fetch(pinataGateway + downloadLink)
-        let file = await res.json()
+        let file = await getCidData(downloadLink)
         let encKey = await file.key;
         let aesKey = await window.ethereum
             .request({
@@ -269,7 +281,7 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
         <>
             <div className="homePageContainer bg-dark " style={{ padding: "1rem 0px 7rem 0px", }} >
 
-            {/* <Form>
+                {/* <Form>
                 <FormGroup controlId="formFile" className="mb-3">
                     <FormLabel>Select File</FormLabel>
                     <FormControl variant="outline-primary"
@@ -280,109 +292,109 @@ function User({ state, ekey, cid, files, setFiles, setEkey }) {
                         className="custom__input__file__container" onClick={() => upload()} > Encrypt & Upload</Button>
                 </FormGroup>
             </Form> */}
-            <Modal show={ushow} onHide={handleuClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Upload</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <Form>
-                <FormGroup controlId="formFile" className="mb-3">
-                    <FormLabel>Select File</FormLabel>
-                    <FormControl variant="outline-primary"
-                            style={{ oultine: "none", border: "1px solid #30efea" }}
-                            className="custom__input__file__container" type="file" name='file' onChange={onUploadFileChange} accept="application/pdf,image/*" />
-                    <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={() => upload()} > Encrypt & Upload</Button>
-                </FormGroup>
-            </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleuClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={() => handleGetPublicKey()}> Share Public Key</Button>
-            <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={() => handleushow()}> Upload</Button>
+                <Modal show={ushow} onHide={handleuClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Upload</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <FormGroup controlId="formFile" className="mb-3">
+                                <FormLabel>Select File</FormLabel>
+                                <FormControl variant="outline-primary"
+                                    style={{ oultine: "none", border: "1px solid #30efea" }}
+                                    className="custom__input__file__container" type="file" name='file' onChange={onUploadFileChange} accept="application/pdf,image/*" />
+                                <Button variant="outline-primary"
+                                    style={{ oultine: "none", }}
+                                    className="custom__input__file__container" onClick={() => upload()} > Encrypt & Upload</Button>
+                            </FormGroup>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleuClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Button variant="outline-primary"
+                    style={{ oultine: "none", }}
+                    className="custom__input__file__container" onClick={() => handleGetPublicKey()}> Receive File</Button>
+                <Button variant="outline-primary"
+                    style={{ oultine: "none", }}
+                    className="custom__input__file__container" onClick={() => handleushow()}> Upload</Button>
 
-            <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={() => handleDownload()}>Download Shared File</Button>
-                        <Card className="bg-dark files__list__container">
-            <UserFiles />
-            </Card>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Enter Recipient's Public Key</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <InputGroup className="mb-3">
-                        <FormControl
-                            placeholder="Recipient's Public Key"
-                            aria-label="Recipient's Public Key"
-                            aria-describedby="sharePublicKey"
-                            onChange={handleSharePublicKey}
-                        />
-                    </InputGroup>
-                    <h7 onClick={() => navigator.clipboard.writeText(sharedLink)}>{sharedLink}</h7>
+                <Button variant="outline-primary"
+                    style={{ oultine: "none", }}
+                    className="custom__input__file__container" onClick={() => handleDownload()}>Download Shared File</Button>
+                <Card className="bg-dark files__list__container">
+                    <UserFiles />
+                </Card>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Enter Recipient's Public Key</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <InputGroup className="mb-3">
+                            <FormControl
+                                placeholder="Recipient's Public Key"
+                                aria-label="Recipient's Public Key"
+                                aria-describedby="sharePublicKey"
+                                onChange={handleSharePublicKey}
+                            />
+                        </InputGroup>
+                        <h7 onClick={() => navigator.clipboard.writeText(sharedLink)}>{sharedLink}</h7>
 
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={handleShareEncrypt}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={pshow} onHide={handlepClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Your Public Key</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p onClick={() => navigator.clipboard.writeText(sharePublicKey)}>{sharePublicKey}</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handlepClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={dshow} onHide={handledClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Shared File ID</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <InputGroup className="mb-3">
-                        <FormControl
-                            placeholder="Enter File ID"
-                            aria-label="Enter File ID"
-                            aria-describedby="sharePublicKey"
-                            onChange={handleDownloadLink}
-                        />
-                    </InputGroup>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handledClose}>
-                        Close
-                    </Button>
-                    <Button variant="outline-primary"
-                        style={{ oultine: "none", }}
-                        className="custom__input__file__container" onClick={() => handleSharedFileDownload()}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-primary"
+                            style={{ oultine: "none", }}
+                            className="custom__input__file__container" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="outline-primary"
+                            style={{ oultine: "none", }}
+                            className="custom__input__file__container" onClick={handleShareEncrypt}>
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={pshow} onHide={handlepClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Your Public Key (Send to your Doctor)</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p onClick={() => navigator.clipboard.writeText(sharePublicKey)}>{sharePublicKey}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handlepClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={dshow} onHide={handledClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Shared File ID</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <InputGroup className="mb-3">
+                            <FormControl
+                                placeholder="Enter File ID"
+                                aria-label="Enter File ID"
+                                aria-describedby="sharePublicKey"
+                                onChange={handleDownloadLink}
+                            />
+                        </InputGroup>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handledClose}>
+                            Close
+                        </Button>
+                        <Button variant="outline-primary"
+                            style={{ oultine: "none", }}
+                            className="custom__input__file__container" onClick={() => handleSharedFileDownload()}>
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </>
     );
